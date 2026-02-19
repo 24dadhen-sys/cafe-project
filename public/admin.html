@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sippin's Cafe — Admin Dashboard</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="admin-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="admin-sidebar">
+            <div class="sidebar-header">
+                <h2>☕ Sippin's</h2>
+                <div class="sidebar-subtitle">Admin Panel</div>
+            </div>
+            <nav class="sidebar-nav">
+                <button class="sidebar-link active" onclick="showSection('orders', this)">
+                    <span class="link-icon">📋</span> <span>Orders</span>
+                </button>
+                <button class="sidebar-link" onclick="showSection('menu-mgmt', this)">
+                    <span class="link-icon">🍔</span> <span>Menu</span>
+                </button>
+                <button class="sidebar-link" onclick="showSection('reports', this)">
+                    <span class="link-icon">📊</span> <span>Reports</span>
+                </button>
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn-logout" onclick="logout()">🚪 <span>Logout</span></button>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="admin-main">
+
+            <!-- ===== ORDERS SECTION ===== -->
+            <section id="section-orders" class="admin-section active">
+                <h1 class="admin-page-title">📋 Order Counter</h1>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards" id="summaryCards">
+                    <div class="summary-card">
+                        <div class="card-label">Total Orders</div>
+                        <div class="card-value" id="statTotal">0</div>
+                    </div>
+                    <div class="summary-card revenue">
+                        <div class="card-label">Revenue</div>
+                        <div class="card-value" id="statRevenue">₹0</div>
+                    </div>
+                    <div class="summary-card pending">
+                        <div class="card-label">Pending</div>
+                        <div class="card-value" id="statPending">0</div>
+                    </div>
+                    <div class="summary-card preparing">
+                        <div class="card-label">Preparing</div>
+                        <div class="card-value" id="statPreparing">0</div>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <select id="filterStatus" onchange="loadOrders()">
+                        <option value="all">All Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="preparing">Preparing</option>
+                        <option value="ready">Ready</option>
+                        <option value="served">Served</option>
+                        <option value="cancelled">Cancelled</option>
+                    </select>
+                    <input type="text" id="filterTable" placeholder="Filter by table #" oninput="loadOrders()">
+                </div>
+
+                <!-- Order Grid -->
+                <div class="orders-grid" id="ordersGrid">
+                    <div class="no-orders-msg">
+                        <div class="no-orders-icon">📭</div>
+                        <p>No orders yet. Waiting for customers...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== MENU MANAGEMENT SECTION ===== -->
+            <section id="section-menu-mgmt" class="admin-section">
+                <div class="menu-mgmt-header">
+                    <h1 class="admin-page-title">🍔 Menu Management</h1>
+                    <button class="btn-add-item" onclick="openMenuModal()">
+                        ➕ Add Item
+                    </button>
+                </div>
+                <div class="menu-table" id="menuTableContainer">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Name</th>
+                                <th>Category</th>
+                                <th>Price</th>
+                                <th>Available</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="menuTableBody"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- ===== REPORTS SECTION ===== -->
+            <section id="section-reports" class="admin-section">
+                <h1 class="admin-page-title">📊 Daily Summary</h1>
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="card-label">Today's Orders</div>
+                        <div class="card-value" id="rptOrders">0</div>
+                    </div>
+                    <div class="summary-card revenue">
+                        <div class="card-label">Today's Revenue</div>
+                        <div class="card-value" id="rptRevenue">₹0</div>
+                    </div>
+                    <div class="summary-card">
+                        <div class="card-label">Avg Order Value</div>
+                        <div class="card-value" id="rptAvg">₹0</div>
+                    </div>
+                    <div class="summary-card pending">
+                        <div class="card-label">Pending</div>
+                        <div class="card-value" id="rptPending">0</div>
+                    </div>
+                    <div class="summary-card preparing">
+                        <div class="card-label">Preparing</div>
+                        <div class="card-value" id="rptPreparing">0</div>
+                    </div>
+                    <div class="summary-card" style="border-left-color:var(--success);">
+                        <div class="card-label">Served</div>
+                        <div class="card-value" id="rptServed">0</div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- MENU ITEM MODAL -->
+    <div id="menuModal" class="menu-modal-overlay hidden">
+        <div class="menu-modal">
+            <div class="menu-modal-header">
+                <h2 id="menuModalTitle">Add Menu Item</h2>
+                <button class="close-cart" onclick="closeMenuModal()">✕</button>
+            </div>
+            <div class="menu-modal-body">
+                <form id="menuItemForm" enctype="multipart/form-data">
+                    <input type="hidden" id="editItemId">
+                    <div class="form-group">
+                        <label>Item Name</label>
+                        <input type="text" id="itemName" placeholder="e.g. Hazelnut Frappe" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Category</label>
+                            <select id="itemCategory" required>
+                                <option value="">Select Category</option>
+                                <option value="Tea">Tea</option>
+                                <option value="Hot Coffee">Hot Coffee</option>
+                                <option value="Hot Chocolate">Hot Chocolate</option>
+                                <option value="Cold Coffee & Frappe">Cold Coffee & Frappe</option>
+                                <option value="Breads & Bun">Breads & Bun</option>
+                                <option value="Snacks">Snacks</option>
+                                <option value="Puff">Puff</option>
+                                <option value="Nachos & Chips">Nachos & Chips</option>
+                                <option value="Pasta">Pasta</option>
+                                <option value="Desserts">Desserts</option>
+                                <option value="Waffles">Waffles</option>
+                                <option value="Ramen">Ramen</option>
+                                <option value="Full Meal Special">Full Meal Special</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Price (₹)</label>
+                            <input type="number" id="itemPrice" placeholder="0" min="0" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description</label>
+                        <textarea id="itemDescription" placeholder="Brief item description (optional)"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Image</label>
+                        <div class="image-upload" id="imageUploadArea"
+                            onclick="document.getElementById('itemImage').click()">
+                            <div class="upload-icon">📷</div>
+                            <p style="font-size:0.85rem;color:var(--text-muted);">Click to upload image</p>
+                            <input type="file" id="itemImage" accept="image/*" onchange="previewImage(event)">
+                        </div>
+                        <img id="imagePreview" class="image-preview" style="display:none;">
+                    </div>
+                </form>
+            </div>
+            <div class="menu-modal-footer">
+                <button class="btn-cancel" onclick="closeMenuModal()">Cancel</button>
+                <button class="btn-save" onclick="saveMenuItem()">Save Item</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

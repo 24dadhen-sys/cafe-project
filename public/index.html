@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sippin's Cafe - Order your favorite coffee, snacks & meals. Estd. 2025">
+  <title>Sippin's Cafe — Menu & Order</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- TABLE NUMBER MODAL -->
+  <div id="tableModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="cafe-icon">☕</div>
+      <h2>Welcome to Sippin's Cafe</h2>
+      <p>Please enter your table number to start ordering</p>
+      <input type="text" id="tableInput" placeholder="e.g. 5" maxlength="3" autofocus>
+      <button class="btn-start" id="btnStartOrder" disabled>Start Ordering</button>
+    </div>
+  </div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="header-content">
+      <div class="logo">
+        <span class="logo-icon">☕</span>
+        <div>
+          <h1>Sippin's Cafe</h1>
+          <div class="subtitle">Estd. 2025</div>
+        </div>
+      </div>
+      <div class="table-badge" id="tableBadge" style="display:none;">
+        🪑 Table <span id="tableDisplay">-</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-container">
+    <div class="search-bar">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search menu items...">
+    </div>
+  </div>
+
+  <!-- CATEGORY NAV -->
+  <nav class="category-nav">
+    <div class="category-nav-inner" id="categoryNav"></div>
+  </nav>
+
+  <!-- MENU -->
+  <main class="menu-container" id="menuContainer">
+    <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
+      <div class="loader" style="margin:0 auto 16px;border-color:var(--beige-light);border-top-color:var(--brown);"></div>
+      Loading menu...
+    </div>
+  </main>
+
+  <!-- FLOATING CART BUTTON -->
+  <button class="cart-fab hidden" id="cartFab" onclick="openCart()">
+    🛒 View Cart • <span id="cartFabTotal">₹0</span>
+    <span class="cart-count" id="cartFabCount">0</span>
+  </button>
+
+  <!-- CART OVERLAY -->
+  <div id="cartOverlay" class="cart-overlay hidden" onclick="closeCart()"></div>
+
+  <!-- CART DRAWER -->
+  <div id="cartDrawer" class="cart-drawer hidden">
+    <div class="cart-drawer-header">
+      <h2>🛒 Your Order</h2>
+      <button class="close-cart" onclick="closeCart()">✕</button>
+    </div>
+    <div class="cart-items-list" id="cartItemsList">
+      <div class="cart-empty">
+        <div class="empty-icon">🍽️</div>
+        <p>Your cart is empty</p>
+      </div>
+    </div>
+    <div class="cart-footer">
+      <div class="cart-summary-row">
+        <span>Subtotal</span>
+        <span id="cartSubtotal">₹0</span>
+      </div>
+      <div class="cart-summary-row total">
+        <span>Total</span>
+        <span id="cartTotal">₹0</span>
+      </div>
+      <div style="margin-top:10px;">
+        <label style="font-size:0.8rem;color:var(--text-secondary);display:flex;align-items:center;gap:6px;cursor:pointer;">
+          <input type="checkbox" id="parcelCheck"> Parcel order (+₹10)
+        </label>
+      </div>
+      <button class="btn-checkout" id="btnCheckout" onclick="placeOrder()" disabled>
+        Place Order 🎯
+      </button>
+    </div>
+  </div>
+
+  <!-- LOADING OVERLAY -->
+  <div id="loadingOverlay" class="loading-overlay hidden">
+    <div class="loader"></div>
+    <p>Placing your order...</p>
+  </div>
+
+  <!-- ORDER CONFIRMATION -->
+  <div id="orderConfirm" class="order-confirm-overlay hidden">
+    <div class="order-confirm-box">
+      <div class="success-icon">✅</div>
+      <h2>Order Placed!</h2>
+      <div class="order-number" id="confirmOrderNum">#1001</div>
+      <p>Your order has been sent to the kitchen.<br>Table <span id="confirmTable">-</span></p>
+      <button class="btn-new-order" onclick="resetOrder()">Order More ➕</button>
+    </div>
+  </div>
+
+  <!-- TOAST CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/menu.js"></script>
+</body>
+</html>
