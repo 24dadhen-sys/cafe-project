@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ☕ Sippin's Cafe — Digital Ordering System
 
 A complete QR-based cafe ordering system with real-time order tracking, admin dashboard, and menu management.
@@ -176,3 +177,6 @@ sippins-cafe/
 ---
 
 Built with ❤️ for Sippin's Cafe — Estd. 2025
+=======
+# cafe-project
+>>>>>>> 49f405f0ab0b6398853786f136cb63e7c24f9411
