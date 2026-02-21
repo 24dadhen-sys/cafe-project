@@ -12,6 +12,7 @@ const adminRoutes = require('./routes/admin');
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server, {
     cors: { origin: '*', methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'] }
 });
@@ -32,13 +33,12 @@ app.use('/api/menu', menuRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/admin', adminRoutes);
 
-// Socket.io connection handling
+// Socket connection
 io.on('connection', (socket) => {
-    console.log(`🔌 Client connected: ${socket.id}`);
+    console.log(`Client connected: ${socket.id}`);
 
     socket.on('join-admin', () => {
         socket.join('admin-room');
-        console.log(`👨‍💼 Admin joined: ${socket.id}`);
     });
 
     socket.on('join-customer', (data) => {
@@ -48,18 +48,12 @@ io.on('connection', (socket) => {
     });
 
     socket.on('disconnect', () => {
-        console.log(`❌ Client disconnected: ${socket.id}`);
+        console.log(`Client disconnected: ${socket.id}`);
     });
 });
 
-// Connect to DB and start server
-const PORT = process.env.PORT || 3000;
+// Connect database
+connectDB();
 
-connectDB().then(() => {
-    server.listen(PORT, () => {
-        console.log(`\n☕ Sippin's Cafe server running on http://localhost:${PORT}`);
-        console.log(`📱 Customer Menu: http://localhost:${PORT}`);
-        console.log(`🔐 Admin Panel:   http://localhost:${PORT}/login.html`);
-        console.log(`📊 Admin Dashboard: http://localhost:${PORT}/admin.html\n`);
-    });
-});
+// EXPORT SERVER (IMPORTANT FOR VERCEL)
+module.exports = server;
